@@ -12,7 +12,9 @@
 
 #5. Создаем классы для сотрудников, например, `ZooKeeper`, `Veterinarian`, которые могут иметь специфические методы
 # (например, `feed_animal()` для `ZooKeeper` и `heal_animal()` для `Veterinarian`).
-class Animal():
+import pickle
+
+class Animal:
     def __init__(self, name, age):
         self.name = name
         self.age = age
@@ -47,6 +49,7 @@ class Reptile(Animal):
         print("щщщщщщщ")
     def eat(self):
         print("Животные")
+
 def animal_sound(animals):
     for animal in animals:
         animal.make_sound()
@@ -55,10 +58,21 @@ class Zoo:
     def __init__(self):
         self.animals = []
         self.employees = []
+
     def add_animal(self, animal):
         self.animals.append(animal)
+
     def add_employee(self, employee):
         self.employees.append(employee)
+
+    def save_zoo(self, filename):
+        with open(filename, 'wb') as file:
+            pickle.dump(self, file)
+
+    @staticmethod
+    def load_zoo(filename):
+        with open(filename, 'rb') as file:
+            return pickle.load(file)
 
 class ZooKeeper:
     def feed_animal(self, animal):
@@ -68,7 +82,7 @@ class Veterinarian:
     def heal_animal(self, animal):
         print(f"Healing {animal.name}")
 
-#Пример использования:
+# Пример использования:
 bird1 = Bird("Tweety", 2)
 mammal1 = Mammal("Koala", 5)
 reptile1 = Reptile("Crocodile", 3, "рррррр")
@@ -83,3 +97,12 @@ veterinarian = Veterinarian()
 for animal in zoo.animals:
     zookeeper.feed_animal(animal)
     veterinarian.heal_animal(animal)
+
+# Сохранение зоопарка в файл
+zoo.save_zoo("zoo_data.pkl")
+
+# Загрузка зоопарка из файла
+loaded_zoo = Zoo.load_zoo("zoo_data.pkl")
+print("Loaded Zoo Animals:")
+for animal in loaded_zoo.animals:
+    print(animal.name)
